@@ -3,6 +3,8 @@ package orm
 import (
 	"sync"
 
+	"github.com/dynamicgo/slf4go"
+
 	"github.com/go-xorm/xorm"
 )
 
@@ -27,6 +29,7 @@ type Page struct {
 type SyncHandler func() []interface{}
 
 type registerImpl struct {
+	slf4go.Logger
 	sync.RWMutex
 	handlers []SyncHandler
 }
@@ -51,10 +54,18 @@ func (register *registerImpl) Sync(engine *xorm.Engine) error {
 	return engine.Sync2(tables...)
 }
 
-var register = &registerImpl{}
+var register = &registerImpl{
+	Logger: slf4go.Get("orm"),
+}
 
 // Register .
 func Register(handler SyncHandler) {
+	register.Register(handler)
+}
+
+// RegisterWithName .
+func RegisterWithName(name string, handler SyncHandler) {
+	register.DebugF("register orm module %s", name)
 	register.Register(handler)
 }
 
