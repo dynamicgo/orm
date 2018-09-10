@@ -19,8 +19,8 @@ var (
 
 // Page .
 type Page struct {
-	Offset  uint64    `json:"offset"`
-	Size    uint64    `json:"size"`
+	Offset  uint64    `binding:"required" json:"offset"`
+	Size    uint64    `binding:"required" json:"size"`
 	OrderBy string    `json:"orderby"`
 	Order   PageOrder `json:"order"`
 }
